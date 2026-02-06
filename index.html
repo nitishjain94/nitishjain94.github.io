@@ -24,13 +24,13 @@
       overflow: hidden;
     }
 
-    /* --- FULL SCREEN BACKGROUND PHOTOS --- */
+    /* --- FULL SCREEN BACKGROUND PHOTOS (RECTIFIED) --- */
     #gallery {
       position: fixed;
       inset: 0;
       width: 100vw;
       height: 100vh;
-      z-index: -1; /* Behind everything */
+      z-index: -1; 
       display: none;
     }
 
@@ -39,9 +39,12 @@
       inset: 0;
       opacity: 0;
       transition: opacity 1.5s ease-in-out;
-      background-size: cover;
+      /* FIX: Changed from 'cover' to 'contain' to stop zooming/cropping */
+      background-size: contain; 
+      background-repeat: no-repeat;
       background-position: center;
-      filter: opacity(0.6); /* 60% Opacity as requested */
+      background-color: var(--bg); /* Fills side gaps with the theme color */
+      filter: opacity(0.6); 
     }
     .photo.active { opacity: 1; }
 
@@ -75,7 +78,7 @@
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.9);
       padding: 2.5rem 1.5rem;
       border-radius: 25px;
       box-shadow: 0 15px 35px rgba(0,0,0,0.1);
@@ -94,7 +97,6 @@
       margin-top: 15px;
       font-size: 0.9rem;
       color: #666;
-      opacity: 0.8;
     }
 
     .buttons { 
@@ -117,23 +119,18 @@
     }
 
     #yesBtn { background: var(--primary); color: white; }
-    #noBtn { background: #e5e5e5; color: #333; transition: none; }
+    #noBtn { background: #e5e5e5; color: #333; }
 
-    /* Success Screen GIFs */
-    .gif-group {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    .gif-group img {
-      width: 140px;
+    /* Success Screen GIF */
+    .success-gif {
+      width: 180px;
       height: auto;
-      border-radius: 10px;
+      border-radius: 15px;
+      margin-bottom: 15px;
     }
 
     #success { display: none; }
-    #success p { font-weight: bold; color: #ff4d6d; margin-bottom: 5px; }
+    #success p.decision { font-weight: bold; color: #ff4d6d; margin-bottom: 5px; }
 
     @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
   </style>
@@ -171,11 +168,8 @@
     </div>
 
     <div class="card" id="success">
-      <div class="gif-group">
-        <img src="giphy.gif" alt="Happy Cat 1">
-        <img src="giphy (1).gif" alt="Happy Cat 2">
-      </div>
-      <p>Good decision</p> 
+      <img src="giphy (1).gif" alt="Happy Cat" class="success-gif">
+      <p class="decision">Good decision</p> 
       <h1>YAY! 🎉❤️</h1>
       <p style="color: #666; font-weight: normal;">See you next week!</p>
     </div>
