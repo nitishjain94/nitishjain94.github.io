@@ -19,17 +19,38 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #ffeef2 0%, #ffd6e0 100%);
+      background-color: var(--bg);
       font-family: 'Nunito', sans-serif;
-      overflow: hidden; /* Prevents scrollbars when button moves */
+      overflow: hidden;
     }
 
-    /* --- SCREEN 1: THE LOCK SCREEN --- */
+    /* --- FULL SCREEN BACKGROUND PHOTOS --- */
+    #gallery {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1; /* Behind everything */
+      display: none;
+    }
+
+    .photo {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+      background-size: cover;
+      background-position: center;
+      filter: opacity(0.6); /* 60% Opacity as requested */
+    }
+    .photo.active { opacity: 1; }
+
+    /* --- LOCK SCREEN --- */
     #start-screen {
       position: fixed;
       inset: 0;
       background: #ffeef2;
-      z-index: 50;
+      z-index: 100;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -44,55 +65,36 @@
       animation: bounce 2s infinite;
     }
 
-    /* --- MAIN CONTENT --- */
+    /* --- CONTENT CARDS --- */
     #main-content {
-      opacity: 0;
-      transition: opacity 1s ease 0.5s; 
       width: 90%;
-      max-width: 500px;
+      max-width: 450px;
       text-align: center;
       display: none; 
-      position: relative; /* Important for button movement */
-      z-index: 1;
+      z-index: 10;
     }
-
-    /* Photo Gallery */
-    .gallery {
-      position: relative;
-      width: 100%;
-      height: 250px;
-      margin-bottom: 20px;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      display: none; 
-    }
-
-    .photo {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transition: opacity 1s ease;
-	  background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-    }
-    .photo.active { opacity: 1; }
 
     .card {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 2rem;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-      backdrop-filter: blur(5px);
-      position: relative; /* Fix: Makes sure button stays inside card */
+      background: rgba(255, 255, 255, 0.85);
+      padding: 2.5rem 1.5rem;
+      border-radius: 25px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      backdrop-filter: blur(8px);
+      position: relative;
     }
 
     h1 {
       font-family: 'Pacifico', cursive;
       color: var(--primary);
-      font-size: 2.2rem;
-      margin-bottom: 20px;
+      font-size: clamp(1.8rem, 5vw, 2.2rem);
+      margin-bottom: 15px;
+    }
+
+    .hint {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: #666;
+      opacity: 0.8;
     }
 
     .buttons { 
@@ -100,33 +102,38 @@
       justify-content: center; 
       align-items: center;
       gap: 20px; 
-      margin-top: 20px;
-      height: 60px; /* Keeps layout stable */
+      margin-top: 25px;
+      height: 80px; 
     }
 
     button {
-      padding: 12px 30px;
+      padding: 12px 28px;
       font-size: 1.1rem;
       border: none;
       border-radius: 50px;
       cursor: pointer;
       font-weight: 800;
-      font-family: 'Nunito', sans-serif;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.2s;
     }
 
-    #yesBtn { background: var(--primary); color: white; z-index: 10; }
-    #yesBtn:hover { transform: scale(1.1); box-shadow: 0 5px 15px rgba(255,77,109,0.4); }
+    #yesBtn { background: var(--primary); color: white; }
+    #noBtn { background: #e5e5e5; color: #333; transition: none; }
 
-    /* Fix: Start static, become absolute later via JS */
-    #noBtn { 
-      background: #e5e5e5; 
-      color: #333; 
+    /* Success Screen GIFs */
+    .gif-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .gif-group img {
+      width: 140px;
+      height: auto;
+      border-radius: 10px;
     }
 
-    /* Success Message */
     #success { display: none; }
-    #success img { width: 200px; margin-bottom: 20px; }
+    #success p { font-weight: bold; color: #ff4d6d; margin-bottom: 5px; }
 
     @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
   </style>
@@ -139,121 +146,94 @@
 
   <div id="start-screen">
     <div class="envelope" onclick="startJourney()">💌</div>
-    <p style="margin-top: 20px; color: #ff4d6d; font-weight: bold;">Click to open Kavitaji</p>
+    <p style="margin-top: 20px; color: #ff4d6d; font-weight: bold;">Click to open, Kavitaji</p>
+  </div>
+
+  <div id="gallery">
+    <div class="photo active" style="background-image: url('photo1.jpg');"></div>
+    <div class="photo" style="background-image: url('photo2.jpg');"></div>
+    <div class="photo" style="background-image: url('photo3.jpg');"></div>
+    <div class="photo" style="background-image: url('photo4.jpg');"></div>
+    <div class="photo" style="background-image: url('photo5.jpg');"></div>
+    <div class="photo" style="background-image: url('photo6.jpg');"></div>
+    <div class="photo" style="background-image: url('photo7.jpg');"></div>
+    <div class="photo" style="background-image: url('photo8.jpg');"></div>
   </div>
 
   <div id="main-content">
-    
-    <div class="gallery" id="gallery">
-      <div class="photo active" style="background-image: url('photo1.jpg');"></div>
-      <div class="photo" style="background-image: url('photo2.jpg');"></div>
-      <div class="photo" style="background-image: url('photo3.jpg');"></div>
-	  <div class="photo" style="background-image: url('photo4.jpg');"></div>
-	  <div class="photo" style="background-image: url('photo5.jpg');"></div>
-	  <div class="photo" style="background-image: url('photo6.jpg');"></div>
-	  <div class="photo" style="background-image: url('photo7.jpg');"></div>
-	  <div class="photo" style="background-image: url('photo8.jpg');"></div>
-    </div>
-
     <div class="card" id="question-card">
       <h1>Kavitaji❤️, will you be my Valentine?</h1>
       <div class="buttons">
         <button id="yesBtn" onclick="sheSaidYes()">Yes! ❤️</button>
         <button id="noBtn">No</button>
       </div>
+      <div class="hint">“No” seems a bit shy 😈</div>
     </div>
 
     <div class="card" id="success">
-      <img src="https://media.tenor.com/fMP146b2aIUAAAAi/mochi-cat-mochi.gif" alt="Happy Cat" style="width: 200px; height: auto;">
+      <div class="gif-group">
+        <img src="giphy.gif" alt="Happy Cat 1">
+        <img src="giphy (1).gif" alt="Happy Cat 2">
+      </div>
+      <p>Good decision</p> 
       <h1>YAY! 🎉❤️</h1>
-      <p>See you next week!</p>
+      <p style="color: #666; font-weight: normal;">See you next week!</p>
     </div>
   </div>
 
   <canvas id="confetti-canvas" style="position:fixed; inset:0; pointer-events:none; z-index:99;"></canvas>
 
   <script>
-    /* --- LOGIC --- */
     function startJourney() {
-      // 1. Play Music
-      document.getElementById('bg-music').play().catch(e => console.log("Audio play failed"));
-      
-      // 2. Hide Start Screen
+      document.getElementById('bg-music').play().catch(e => console.log("Music blocked"));
       const startScreen = document.getElementById('start-screen');
       startScreen.style.opacity = '0';
-      setTimeout(() => { startScreen.style.display = 'none'; }, 800);
-
-      // 3. Show Main Content
-      const mainContent = document.getElementById('main-content');
-      mainContent.style.display = 'block';
-      setTimeout(() => { mainContent.style.opacity = '1'; }, 100);
-
-      // 4. Start Slideshow
-      const gallery = document.getElementById('gallery');
-      gallery.style.display = 'block';
-      startSlideshow();
+      setTimeout(() => { 
+        startScreen.style.display = 'none'; 
+        document.getElementById('gallery').style.display = 'block';
+        document.getElementById('main-content').style.display = 'block';
+        setTimeout(() => { document.getElementById('main-content').style.opacity = '1'; }, 50);
+        startSlideshow();
+      }, 800);
     }
 
     let currentSlide = 0;
     function startSlideshow() {
       const photos = document.querySelectorAll('.photo');
-      if(photos.length > 0) {
-        setInterval(() => {
-          photos[currentSlide].classList.remove('active');
-          currentSlide = (currentSlide + 1) % photos.length;
-          photos[currentSlide].classList.add('active');
-        }, 3000); 
-      }
+      setInterval(() => {
+        photos[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % photos.length;
+        photos[currentSlide].classList.add('active');
+      }, 3500); 
     }
 
-    /* --- NO BUTTON LOGIC (Fixed) --- */
     const noBtn = document.getElementById('noBtn');
     const card = document.getElementById('question-card');
     
     function moveNo(e) {
-      // Prevent default click behavior
       if(e) e.preventDefault();
-
-      // Get card dimensions
       const cardRect = card.getBoundingClientRect();
       const btnRect = noBtn.getBoundingClientRect();
 
-      // Calculate area within the card
-      // We subtract button size + padding to keep it inside
       const maxX = cardRect.width - btnRect.width - 20;
       const maxY = cardRect.height - btnRect.height - 20;
 
       const randomX = Math.random() * maxX;
       const randomY = Math.random() * maxY;
 
-      // Apply new position
       noBtn.style.position = 'absolute';
       noBtn.style.left = randomX + 'px';
       noBtn.style.top = randomY + 'px';
-      
-      // Ensure it stays above other elements
-      noBtn.style.zIndex = '5';
     }
 
-    // Add multiple event listeners to catch all interaction types
-    noBtn.addEventListener('mouseover', moveNo); // Desktop hover
-    noBtn.addEventListener('touchstart', moveNo); // Mobile touch
-    noBtn.addEventListener('click', moveNo); // Click attempt
+    noBtn.addEventListener('mouseover', moveNo);
+    noBtn.addEventListener('touchstart', moveNo);
 
     function sheSaidYes() {
       document.getElementById('question-card').style.display = 'none';
-      document.getElementById('gallery').style.display = 'none';
       document.getElementById('success').style.display = 'block';
-      
-      // CONFETTI
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-      setTimeout(() => confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } }), 500);
     }
   </script>
 </body>
 </html>
-
-
-
-
-
