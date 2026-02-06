@@ -24,7 +24,6 @@
       overflow: hidden;
     }
 
-    /* --- LOCK SCREEN --- */
     #start-screen {
       position: fixed;
       inset: 0;
@@ -44,7 +43,6 @@
       animation: bounce 2s infinite;
     }
 
-    /* --- MAIN CONTENT --- */
     #main-content {
       opacity: 0;
       transition: opacity 1s ease 0.5s; 
@@ -56,7 +54,6 @@
       z-index: 1;
     }
 
-    /* Photo Gallery - Made Taller (350px) */
     .gallery {
       position: relative;
       width: 100%;
@@ -74,7 +71,7 @@
       inset: 0;
       opacity: 0;
       transition: opacity 1s ease;
-      background-size: contain; /* Prevents cropping/zooming */
+      background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
     }
@@ -126,15 +123,18 @@
     #yesBtn { background: var(--primary); color: white; z-index: 10; }
     #yesBtn:hover { transform: scale(1.1); box-shadow: 0 5px 15px rgba(255,77,109,0.4); }
 
-    #noBtn { 
-      background: #e5e7eb; 
-      color: #111827; 
-    }
+    #noBtn { background: #e5e7eb; color: #111827; }
 
-    /* Success Message Styles */
+    /* Success Message Styles - Increased GIF size */
     #success { display: none; }
     #success .decision-text { font-weight: 800; color: #ff4d6d; margin-bottom: 5px; font-size: 1.2rem; }
-    #success img { width: 180px; height: auto; border-radius: 15px; margin-bottom: 15px; }
+    #success img { 
+      width: 100%;       /* Increased size */
+      max-width: 320px;  /* Limit for mobile */
+      height: auto; 
+      border-radius: 15px; 
+      margin-bottom: 15px; 
+    }
 
     @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
   </style>
@@ -142,7 +142,7 @@
 <body>
 
   <audio id="bg-music" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    <source src="music.mp3" type="audio/mpeg">
   </audio>
 
   <div id="start-screen">
