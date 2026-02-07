@@ -210,6 +210,32 @@
 
     const noBtn = document.getElementById('noBtn');
     const card = document.getElementById('question-card');
+
+    /* --- PERSONALIZED COMPLIMENTS --- */
+    const compliments = [
+  "But you're my favorite person! ❤️",
+  "Think about our first date! 😊",
+  "I promise to buy you chocolate! 🍫",
+  "You're the prettiest girl in the world! ✨",
+  "Who else will laugh at my jokes? 😂",
+  "We make the best team, Kavitaji! 🤝"
+];
+let complimentIndex = 0;
+
+/* Update your moveNo function to include this line: */
+function moveNo(e) {
+  if(e) e.preventDefault();
+  
+  // CHANGE THE HINT TEXT EVERY TIME SHE TRIES TO CLICK NO
+  const hint = document.querySelector('.hint');
+  hint.innerText = compliments[complimentIndex];
+  complimentIndex = (complimentIndex + 1) % compliments.length;
+  hint.style.color = "#ff4d6d";
+  hint.style.fontWeight = "bold";
+
+  // ... (rest of your existing moveNo logic)
+}
+    
     
     function moveNo(e) {
       if(e) e.preventDefault();
@@ -237,3 +263,4 @@
   </script>
 </body>
 </html>
+
