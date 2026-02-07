@@ -24,12 +24,44 @@
       overflow: hidden;
     }
 
+    /* --- SCREEN 0: PASSWORD --- */
+    #password-screen {
+      position: fixed;
+      inset: 0;
+      background: #ffeef2;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .pass-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    input[type="date"] {
+      padding: 10px;
+      border: 2px solid var(--primary);
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      margin: 20px 0;
+      outline: none;
+    }
+
+    /* --- SCREEN 1: ENVELOPE --- */
     #start-screen {
       position: fixed;
       inset: 0;
       background: #ffeef2;
       z-index: 50;
-      display: flex;
+      display: none; /* Shown after password */
       flex-direction: column;
       justify-content: center;
       align-items: center;
@@ -43,6 +75,7 @@
       animation: bounce 2s infinite;
     }
 
+    /* --- MAIN CONTENT --- */
     #main-content {
       opacity: 0;
       transition: opacity 1s ease 0.5s; 
@@ -95,9 +128,10 @@
 
     .hint {
       margin-top: 15px;
-      font-size: 13px;
-      opacity: 0.7;
-      color: #333;
+      font-size: 14px;
+      font-weight: 800;
+      color: #ff4d6d;
+      min-height: 20px;
     }
 
     .buttons { 
@@ -125,12 +159,11 @@
 
     #noBtn { background: #e5e7eb; color: #111827; }
 
-    /* Success Message Styles - Increased GIF size */
     #success { display: none; }
     #success .decision-text { font-weight: 800; color: #ff4d6d; margin-bottom: 5px; font-size: 1.2rem; }
     #success img { 
-      width: 100%;       /* Increased size */
-      max-width: 320px;  /* Limit for mobile */
+      width: 100%;       
+      max-width: 320px;  
       height: auto; 
       border-radius: 15px; 
       margin-bottom: 15px; 
@@ -145,13 +178,23 @@
     <source src="music.mp3" type="audio/mpeg">
   </audio>
 
+  <div id="password-screen">
+    <div class="pass-card">
+      <h2 style="color: #ff4d6d;">For Kavitaji's Eyes Only ❤️</h2>
+      <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">Enter the date we first connected to unlock:</p>
+      <input type="date" id="dateInput">
+      <br>
+      <button onclick="checkPassword()" style="background: #ff4d6d; color: white;">Unlock Surprise</button>
+      <p id="error-msg" style="color: red; font-size: 0.8rem; margin-top: 10px; display: none;">Wrong date, try again! 😊</p>
+    </div>
+  </div>
+
   <div id="start-screen">
     <div class="envelope" onclick="startJourney()">💌</div>
     <p style="margin-top: 20px; color: #ff4d6d; font-weight: bold;">Click to open, Kavitaji</p>
   </div>
 
   <div id="main-content">
-    
     <div class="gallery" id="gallery">
       <div class="photo active" style="background-image: url('photo1.jpg');"></div>
       <div class="photo" style="background-image: url('photo2.jpg');"></div>
@@ -169,7 +212,7 @@
         <button id="yesBtn" onclick="sheSaidYes()">Yes! ❤️</button>
         <button id="noBtn">No</button>
       </div>
-      <div class="hint">“No” seems a bit shy 😈</div>
+      <div class="hint" id="hintText">“No” seems a bit shy 😈</div>
     </div>
 
     <div class="card" id="success">
@@ -183,8 +226,23 @@
   <canvas id="confetti-canvas" style="position:fixed; inset:0; pointer-events:none; z-index:99;"></canvas>
 
   <script>
+    /* --- PASSWORD LOGIC --- */
+    function checkPassword() {
+      const input = document.getElementById('dateInput').value;
+      // Date format from input is YYYY-MM-DD. 27th Nov 2025 is 2025-11-27
+      if (input === '2025-11-27') {
+        document.getElementById('password-screen').style.display = 'none';
+        document.getElementById('start-screen').style.display = 'flex';
+      } else {
+        const error = document.getElementById('error-msg');
+        error.style.display = 'block';
+        setTimeout(() => { error.style.display = 'none'; }, 2000);
+      }
+    }
+
+    /* --- START JOURNEY --- */
     function startJourney() {
-      document.getElementById('bg-music').play().catch(e => console.log("Audio play failed"));
+      document.getElementById('bg-music').play().catch(e => console.log("Audio failed"));
       const startScreen = document.getElementById('start-screen');
       startScreen.style.opacity = '0';
       setTimeout(() => { 
@@ -208,43 +266,36 @@
       }
     }
 
+    /* --- NO BUTTON & HINTS --- */
     const noBtn = document.getElementById('noBtn');
     const card = document.getElementById('question-card');
+    const hintText = document.getElementById('hintText');
 
-    /* --- PERSONALIZED COMPLIMENTS --- */
     const compliments = [
-  "But you're my favorite person! ❤️",
-  "Think about our first date! 😊",
-  "I promise to buy you chocolate! 🍫",
-  "You're the prettiest girl in the world! ✨",
-  "Who else will laugh at my jokes? 😂",
-  "We make the best team, Kavitaji! 🤝"
-];
-let complimentIndex = 0;
-
-/* Update your moveNo function to include this line: */
-function moveNo(e) {
-  if(e) e.preventDefault();
-  
-  // CHANGE THE HINT TEXT EVERY TIME SHE TRIES TO CLICK NO
-  const hint = document.querySelector('.hint');
-  hint.innerText = compliments[complimentIndex];
-  complimentIndex = (complimentIndex + 1) % compliments.length;
-  hint.style.color = "#ff4d6d";
-  hint.style.fontWeight = "bold";
-
-  // ... (rest of your existing moveNo logic)
-}
-    
+      "But you're my favorite person! ❤️",
+      "Think about our first meeting! 😊",
+      "You're the prettiest girl in the world! ✨",
+      "Who else will laugh at my jokes? 😂",
+      "We make the best team, Kavitaji! 🤝",
+      "I'm a fan of your laugh 😊"
+    ];
+    let complimentIndex = 0;
     
     function moveNo(e) {
       if(e) e.preventDefault();
+      
+      // Update Hint Text
+      hintText.innerText = compliments[complimentIndex];
+      complimentIndex = (complimentIndex + 1) % compliments.length;
+
+      // Move Button
       const cardRect = card.getBoundingClientRect();
       const btnRect = noBtn.getBoundingClientRect();
       const maxX = cardRect.width - btnRect.width - 20;
       const maxY = cardRect.height - btnRect.height - 20;
       const randomX = Math.random() * maxX;
       const randomY = Math.random() * maxY;
+      
       noBtn.style.position = 'absolute';
       noBtn.style.left = randomX + 'px';
       noBtn.style.top = randomY + 'px';
@@ -263,4 +314,3 @@ function moveNo(e) {
   </script>
 </body>
 </html>
-
